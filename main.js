@@ -1,7 +1,8 @@
 const setupEvents = require('./installers/setupEvents')
 if (setupEvents.handleSquirrelEvent()) {
 	// squirrel event handled and app will exit in 1000ms, so don't do anything else
-	return
+	// eslint-disable-next-line no-use-before-define
+	return // eslint-disable-line
 }
 
 const electron = require('electron')
