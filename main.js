@@ -4,7 +4,6 @@ if (setupEvents.handleSquirrelEvent()) {
 	// eslint-disable-next-line no-use-before-define
 	return // eslint-disable-line
 }
-
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
@@ -67,13 +66,23 @@ app.on('activate', function() {
 		createWindow()
 	}
 })
-
+////////////////////////////////////////////////////////////////////////
+const ReadExam = require('./src/classes/ReadExam')
 ipc.on('open-file-dialog', function(event) {
 	dialog.showOpenDialog(
+		mainWindow,
 		{
-			properties: ['openFile', 'openDirectory']
+			properties: ['openFile'],
+			filters: [
+				{ name: 'LaTex Files', extensions: ['tex'] },
+				{ name: 'All Files', extensions: ['*'] }
+			]
 		},
 		function(files) {
+			console.log(files)
+			const examReader = new ReadExam(files[0])
+			examReader.loadQuestions()
+			console.log(examReader.questions)
 			if (files) event.sender.send('selected-directory', files)
 		}
 	)
