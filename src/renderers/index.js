@@ -3,13 +3,22 @@
 // All of the Node.js APIs are available in this process.
 // eslint-disable-next-line no-use-before-define
 const { ipcRenderer } = require('electron')
-// eslint-disable-next-line
-const selectDirBtn = document.getElementById('select-directory')
 
-selectDirBtn.addEventListener('click', function() {
-	ipcRenderer.send('open-file-dialog') // eslint-disable-line
+/// download template
+const downLoadBtn = document.getElementById('download-template')
+downLoadBtn.addEventListener('click', () => {
+	ipcRenderer.send('download-template')
 })
+ipcRenderer.on('template-downloaded', (event, path) => {
+	document.getElementById('downloaded-template').innerHTML = path
+})
+//// end of download template
+const uploadExamBtn = document.getElementById('upload-exam')
 
-ipcRenderer.on('selected-directory', function(event, path) {
-	document.getElementById('selected-file').innerHTML = `You selected: ${path}`
+uploadExamBtn.addEventListener('click', function() {
+	ipcRenderer.send('upload-exam') // eslint-disable-line
 })
+ipcRenderer.on('exam-uploaded', (event, path) => {
+	document.getElementById('exam-uploaded').innerHTML = `saved in ${path}`
+})
+///////////

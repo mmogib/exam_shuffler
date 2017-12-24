@@ -1,4 +1,4 @@
-const { loadFileSync, shuffle } = require('../helpers')
+const { loadFileSync } = require('../helpers')
 const settings = require('../configs/settings')
 
 class ReadExam {
@@ -22,11 +22,12 @@ class ReadExam {
 		let questionsString = ''
 		questionsString = matches
 		const qArray = questionsString.split(this.settings.gvarNextQuestion)
-		console.log(qArray.length)
 		for (let q in qArray) {
 			const qBody = qArray[q]
 				.split(this.settings.gvarEndQuestionBodyTag)[0]
 				.split(this.settings.gvarBeginQuestionBodyTag)[1]
+				.split(this.settings.gvarOPTIONITEM)[1]
+				.trim()
 			const qOptions = qArray[q]
 				.split(this.settings.gvarBeginOptions)[1]
 				.split(this.settings.gvarEndOptions)[0]
@@ -34,13 +35,17 @@ class ReadExam {
 			let qOptionsArrayString = []
 			qOptionsArray.forEach((value, index) => {
 				if (index > 0)
-					qOptionsArrayString.push(value.split(this.settings.gvarOPTION)[1])
+					qOptionsArrayString.push(
+						value
+							.replace(/\n/g, '')
+							.replace(/\r/g, '')
+							.trim()
+					)
 			})
-			const options = shuffle(qOptionsArrayString)
 			this.questions.push({
 				body: qBody,
-				options: options.options,
-				correctAnswer: options.correctAnswer
+				options: qOptionsArrayString,
+				correctAnswer: 0
 			})
 		}
 	}

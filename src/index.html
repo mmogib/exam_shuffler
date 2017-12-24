@@ -5,19 +5,23 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="../assets/css/normalize.css">
   <link rel="stylesheet" href="../assets/css/skeleton.css">
-  <title>Hello World!</title>
+  <title>Exam Shuffler</title>
 </head>
 
 <body>
   <div class="container">
+    <button id="download-template" class="button-primary">
+      Download Template
+    </button>
+    <div id="downloaded-template"></div>
 
-    <button id="select-directory" class="button-primary">Choose A file </button>
-    <div id="selected-file"></div>
-  </div>
-  <script>
-    // You can also require other files to run in this process
-    require('./renderers')
-  </script>
+    <button id="upload-exam" class="button-primary">Upload Exam </button>
+    <div id="exam-uploaded"></div>
+
+    <script>
+      // You can also require other files to run in this process
+      require('./renderers')
+    </script>
 
 </body>
 

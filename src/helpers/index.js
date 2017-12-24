@@ -1,3 +1,9 @@
+const electron = require('electron')
+// Module to control application life.
+const BrowserWindow = electron.BrowserWindow
+const dialog = electron.dialog
+
+const url = require('url')
 const fs = require('fs')
 module.exports = {
 	loadFile: file => {
@@ -29,5 +35,46 @@ module.exports = {
 			temp[j] = swap
 		}
 		return { options: temp, correctAnswer: correctIndex }
+	},
+	createWindow(file, width = 1200, height = 800) {
+		// Create the browser window.
+		let window = new BrowserWindow({ width, height })
+
+		// and load the index.html of the app.
+		window.loadURL(
+			url.format({
+				pathname: file,
+				protocol: 'file:',
+				slashes: true
+			})
+		)
+
+		// Open the DevTools.
+		// mainWindow.webContents.openDevTools()
+
+		// Emitted when the window is closed.
+		window.on('closed', function() {
+			// Dereference the window object, usually you would store windows
+			// in an array if your app supports multi windows, this is the time
+			// when you should delete the corresponding element.
+			window = null
+		})
+		return window
+	},
+	saveFile(text) {
+		const options = {
+			title: 'Save LaTeX File',
+			filters: [{ name: 'LaTeX', extensions: ['tex'] }]
+		}
+		return new Promise(resolve => {
+			dialog.showSaveDialog(options, function(filename) {
+				if (filename) {
+					fs.writeFileSync(filename, text)
+					resolve(filename)
+				} else {
+					resolve(false)
+				}
+			})
+		})
 	}
 }
