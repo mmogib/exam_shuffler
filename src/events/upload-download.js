@@ -10,6 +10,9 @@ const Exam = require('../classes/Exam')
 const { saveFile } = require('../helpers')
 
 const uploadDownLoads = mainWindow => {
+	ipc.on('get-initial-config', function(e) {
+		e.sender.send('set-initial-config')
+	})
 	ipc.on('upload-exam', function(event) {
 		dialog.showOpenDialog(
 			mainWindow,
@@ -19,17 +22,22 @@ const uploadDownLoads = mainWindow => {
 			},
 			function(files) {
 				if (files) {
-					const examReader = new ReadExam(files[0])
-					examReader.loadQuestions()
-					const exam = new Exam(examReader.questions)
-					saveFile(exam.getExam()).then(filename => {
-						if (filename !== false) {
-							event.sender.send('exam-uploaded', filename)
-						}
-					})
+					event.sender.send('exam-uploaded', files[0])
 				}
 			}
 		)
+	})
+	ipc.on('process-exam', function(event, file, config) {
+		if (file) {
+			const examReader = new ReadExam(file)
+			examReader.loadQuestions()
+			const exam = new Exam(examReader.questions, config)
+			saveFile(exam.getExam()).then(filename => {
+				if (filename !== false) {
+					event.sender.send('exam-processed', filename)
+				}
+			})
+		}
 	})
 
 	ipc.on('download-template', event => {
@@ -40,6 +48,10 @@ const uploadDownLoads = mainWindow => {
 				event.sender.send('template-downloaded', filename)
 			}
 		})
+	})
+
+	ipc.on('open-error-dialog', function(event, errorMessage) {
+		dialog.showErrorBox('Error ', errorMessage)
 	})
 }
 

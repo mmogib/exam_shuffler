@@ -1,9 +1,9 @@
 const path = require('path')
 const { loadFileSync, shuffle } = require('../helpers')
 const settings = require('../configs/settings')
-const config = require('../configs/configs')
 class Exam {
-	constructor(questions) {
+	constructor(questions, config) {
+		this.config = config
 		this.questions = questions
 		this.examString = ''
 		this.preamble = ''
@@ -71,14 +71,14 @@ class Exam {
 		}
 		return questionsString
 	}
-	getVersion() {
+	getVersion(name) {
 		let examVar = `
 			${this.codeFirstPage}
 			${this.versionStart}
 			${this.getQuestionString(true)}
 			${this.versionEnd}
 		`
-		return this.setVariables(examVar, 'CODE 0001')
+		return this.setVariables(examVar, name)
 	}
 	getMasterVersion() {
 		let examVar = `
@@ -94,23 +94,25 @@ class Exam {
 		return vesrion
 			.replace(/GVAR_UNIVERSITY/g, settings.gvarUniversity)
 			.replace(/GVAR_DEPARTMENT/g, settings.gvarDepartment)
-			.replace(/VAR_COURSE_CODE/g, config.varCourseCode)
-			.replace(/VAR_EXAM_TITLE/g, config.varExamTitle)
-			.replace(/VAR_TERM/g, config.varTerm)
-			.replace(/VAR_DATE/g, config.varDate)
-			.replace(/VAR_NUM_OF_VERSIONS/g, config.varNumOfVersions)
-			.replace(/VAR_NUM_OF_QUESTIONS/g, config.varNumOfQuestions)
-			.replace(/VAR_NUM_ANSWERS/g, config.varNumAnswers)
-			.replace(/VAR_TIME_ALLOWED/g, config.varTimeAllowed)
-			.replace(/VAR_NUM_OF_PAGES/g, parseInt(config.varNumOfQuestions) / 2)
+			.replace(/VAR_COURSE_CODE/g, this.config.varCourseCode)
+			.replace(/VAR_EXAM_TITLE/g, this.config.varExamTitle)
+			.replace(/VAR_TERM/g, this.config.varTerm)
+			.replace(/VAR_DATE/g, this.config.varDate)
+			.replace(/VAR_NUM_OF_VERSIONS/g, this.config.varNumOfVersions)
+			.replace(/VAR_NUM_OF_QUESTIONS/g, this.config.varNumOfQuestions)
+			.replace(/VAR_NUM_ANSWERS/g, this.config.varNumAnswers)
+			.replace(/VAR_TIME_ALLOWED/g, this.config.varTimeAllowed)
+			.replace(/VAR_NUM_OF_PAGES/g, parseInt(this.config.varNumOfQuestions) / 2)
 			.replace(/VAR_VERSION_NAME/g, name)
 	}
 	getExam() {
 		let examVar = ''
 		let examString = this.examTex.replace('VAR_PREAMBLE', this.preamble)
 		const masterVersion = this.getMasterVersion()
-		const versionOne = this.getVersion()
-		examVar = masterVersion + '\n' + versionOne
+		examVar = masterVersion + '\n'
+		for (let i = 1; i <= this.config.varNumOfVersions; i++) {
+			examVar += this.getVersion(`CODE 000${i}`) + '\n'
+		}
 		examString = examString.replace('VAR_EXAM', examVar)
 		this.examString = examString
 		return this.examString

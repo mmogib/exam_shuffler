@@ -9,14 +9,14 @@ const { createWindow } = require('../helpers')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
+const windowFile = path.join(__dirname, '/../windows/index.html')
 const mainEvents = mainWindow => {
 	// This method will be called when Electron has finished
 	// initialization and is ready to create browser windows.
 	// Some APIs can only be used after this event occurs.
-	app.on(
-		'ready',
-		() => (mainWindow = createWindow(path.join(__dirname, '/../index.html')))
-	)
+	app.on('ready', () => {
+		mainWindow = createWindow(windowFile)
+	})
 
 	// Quit when all windows are closed.
 	app.on('window-all-closed', function() {
@@ -31,7 +31,7 @@ const mainEvents = mainWindow => {
 		// On OS X it's common to re-create a window in the app when the
 		// dock icon is clicked and there are no other windows open.
 		if (mainWindow === null) {
-			mainWindow = createWindow(path.join(__dirname, '/../index.html'))
+			mainWindow = createWindow(windowFile)
 		}
 	})
 }

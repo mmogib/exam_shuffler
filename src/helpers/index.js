@@ -36,7 +36,7 @@ module.exports = {
 		}
 		return { options: temp, correctAnswer: correctIndex }
 	},
-	createWindow(file, width = 1200, height = 800) {
+	createWindow(file, width = 1000, height = 800) {
 		// Create the browser window.
 		let window = new BrowserWindow({ width, height })
 
@@ -60,6 +60,9 @@ module.exports = {
 			window = null
 		})
 		return window
+	},
+	saveJson(filename, json) {
+		fs.writeFileSync(filename, JSON.stringify(json))
 	},
 	saveFile(text) {
 		const options = {

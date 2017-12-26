@@ -1,0 +1,17 @@
+* {
+	margin: 0;
+}
+body {
+	font-size: 16px;
+}
+.container {
+	margin-top: 5vh;
+	padding: 10px;
+	border-radius: 20px;
+	border: 1px solid;
+	border-color: black;
+}
+.container h2 {
+	color: darkmagenta;
+	margin-bottom: 0;
+}
