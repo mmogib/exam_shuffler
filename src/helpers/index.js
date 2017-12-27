@@ -36,10 +36,17 @@ module.exports = {
 		}
 		return { options: temp, correctAnswer: correctIndex }
 	},
-	createWindow(file, width = 1000, height = 800) {
+	createWindow(
+		file,
+		width = 1100,
+		height = 1000,
+		frame = true,
+		modal = false,
+		parent = null,
+		show = true
+	) {
 		// Create the browser window.
-		let window = new BrowserWindow({ width, height })
-
+		let window = new BrowserWindow({ width, height, frame, modal, parent, show })
 		// and load the index.html of the app.
 		window.loadURL(
 			url.format({

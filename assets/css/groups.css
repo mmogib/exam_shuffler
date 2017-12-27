@@ -1,0 +1,43 @@
+.container {
+	margin-top: 5vh;
+	padding: 20px;
+	border-radius: 20px;
+	border: 1px solid;
+	border-color: black;
+}
+.container h2 {
+	color: darkmagenta;
+	margin-bottom: 0;
+}
+
+.button-red {
+	background-color: brown;
+	color: white;
+}
+
+.alert {
+	padding: 20px;
+	background-color: #f44336;
+	color: white;
+	border: 0px;
+	border-radius: 15px;
+}
+
+.closebtn {
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.closebtn:hover {
+	color: black;
+}
+
+.hide {
+	display: none;
+}
