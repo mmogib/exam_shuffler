@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron')
-const { saveJson } = require('../helpers')
+const { saveJson, saveJasonLocally, loadConfigs } = require('../helpers')
 
 const groupField = (group, index) => {
 	return `
@@ -20,8 +20,12 @@ const listAllGroups = groups => {
 	return html
 }
 function addNewGroup() {
+	const groupsDivs = document.querySelectorAll('.group')
 	let groups = []
-	groups = configs.varGroups
+	for (let i = 0; i < groupsDivs.length; i++) {
+		groups.push(groupsDivs[i].value)
+	}
+
 	groups.push(0)
 	groupsDiv.innerHTML = listAllGroups(groups)
 	groups = null
@@ -44,9 +48,9 @@ function saveWindow() {
 	varNumGroups = groups.length
 	configs.varNumGroups = groups.length
 	configs.varGroups = groups
-
-	saveJson(__dirname + '/../configs/configs.json', configs)
-	ipcRenderer.send('update-groups', groups)
+	saveJasonLocally(configs)
+	//ipcRenderer.send('save-configs', configs)
+	ipcRenderer.send('update-groups')
 	ipcRenderer.send('close-groups-window')
 }
 function cancelWindow() {
@@ -67,7 +71,7 @@ function deleteGroup(e) {
 let groupsDiv, varNumGroups, configs, varNumQuestions
 
 document.addEventListener('readystatechange', () => {
-	configs = require('../configs/configs')
+	configs = loadConfigs()
 	varNumGroups = configs.varNumGroups
 	varNumQuestions = configs.varNumOfQuestions
 	groupsDiv = document.getElementById('groups')

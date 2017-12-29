@@ -1,7 +1,7 @@
 {
 	"name": "exam-shufller",
 	"version": "1.0.0",
-	"description": "A simple app to shuffle exams",
+	"description": "A Simple App to Shuffle Exams",
 	"main": "main.js",
 	"scripts": {
 		"start": "electron .",

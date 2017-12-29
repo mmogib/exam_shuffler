@@ -5,23 +5,7 @@ module.exports = class MainView {
         <hr/>
         <ol>
         <div class="row">
-            <li> First Download this
-            <a id="download-template" href="#" class="button-primary">
-                Template
-            </a> and use it to write your exam. Please make sure not to alter its structure.
-            <p id="downloaded-template"></p>
-            </li>
-
-        </div>
-        <div class="row">
-            <li> Click
-            <a id="upload-exam" href="#" class="button-primary">here </a>
-            to upload your exam.
-            <p id="exam-uploaded"></p>
-            </li>
-        </div>
-        <div class="row">
-            <li>Fill in the following form and click save to start preparing your exam.</li>
+            <li>First fill in the following form and click save to start preparing your exam.</li>
         </div>
         <div class="row">
 
@@ -74,11 +58,36 @@ module.exports = class MainView {
             </div>
             
         </div>
-        <input class="button-primary u-pull-right" type="button" id="saveConfig" value="Save & Download">
-        </ol>
+        <div class="row" > 
+            <div class="twelve columns">
+            <input class="button-default u-full-width" type="button" id="saveConfig" value="Save">
+            <div>
+         </div>
+        
         <div class="row">
         <p id="exam-processed"></p>
         </div>
+        <div class="row">
+            <li> Second download this
+            <a id="download-template" href="#" class="button-primary">
+                Template
+            </a> and use it to write your exam. Please make sure not to alter its structure.
+            <p id="downloaded-template"></p>
+            </li>
+
+        </div>
+        <div class="row">
+            <li> Click
+            <a id="upload-exam" href="#" class="button-primary">here </a>
+            to upload your exam.
+            <p id="exam-uploaded"></p>
+            </li>
+        </div>
+        <div class="row" >
+            
+            <input class="button-primary u-full-width" type="button" id="downloadFile" value="Download Exam">
+        </div>
+        </ol>
     </div>
     
         `

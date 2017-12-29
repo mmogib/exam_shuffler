@@ -15,12 +15,12 @@ function getInstallerConfig() {
 	const outPath = path.join(rootPath, 'release-builds')
 
 	return Promise.resolve({
-		appDirectory: path.join(outPath, 'electron-quick-start-win32-ia32/'),
+		appDirectory: path.join(outPath, 'exam-shuffler-win32-ia32/'),
 		authors: 'Mohammed Alshahrani',
 		noMsi: true,
 		outputDirectory: path.join(outPath, 'windows-installer'),
-		exe: 'electron-quick-start.exe',
-		setupExe: 'ElectronQuickStart.exe',
+		exe: 'exam-shuffler.exe',
+		setupExe: 'ExamShuffler.exe',
 		setupIcon: path.join(rootPath, 'assets', 'icons', 'win', 'icon.ico')
 	})
 }

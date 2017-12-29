@@ -29,7 +29,7 @@ module.exports = {
 		array.forEach(value => temp.push(value))
 		while (--i) {
 			j = (Math.random() * (i + 1)) | 0
-			correctIndex = j === 0 ? i : correctIndex
+			correctIndex = j === correctIndex ? i : correctIndex
 			swap = temp[i]
 			temp[i] = temp[j]
 			temp[j] = swap
@@ -67,6 +67,29 @@ module.exports = {
 			window = null
 		})
 		return window
+	},
+	loadConfigs() {
+		const configs = Object.keys(localStorage)
+		let tempObj = {}
+		configs.forEach(key => {
+			if (key === 'varGroups') {
+				let groups = localStorage.getItem(key).split(',')
+				let tempGrps = []
+				groups.forEach(group => {
+					tempGrps.push(parseInt(group))
+				})
+				tempObj[key] = tempGrps
+			} else {
+				tempObj[key] = localStorage.getItem(key)
+			}
+		})
+		return tempObj
+	},
+	saveJasonLocally(obj) {
+		const keys = Object.keys(obj)
+		keys.forEach(key => {
+			localStorage.setItem(key, obj[key])
+		})
 	},
 	saveJson(filename, json) {
 		fs.writeFileSync(filename, JSON.stringify(json))

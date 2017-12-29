@@ -11,8 +11,8 @@ const { saveFile, createWindow } = require('../helpers')
 const groupFile = path.join(__dirname, '/../windows/groups.html')
 
 const events = (mainWindow, groupsWindow) => {
-	ipc.on('update-groups', (e, groups) => {
-		mainWindow.webContents.send('update-groups', groups)
+	ipc.on('update-groups', () => {
+		mainWindow.webContents.send('update-groups')
 	})
 	ipc.on('close-groups-window', () => {
 		groupsWindow.close()
@@ -36,10 +36,6 @@ const events = (mainWindow, groupsWindow) => {
 		})
 	})
 
-	ipc.on('get-initial-config', function(e) {
-		e.sender.send('set-initial-config')
-	})
-
 	ipc.on('upload-exam', function(event) {
 		dialog.showOpenDialog(
 			mainWindow,
@@ -57,19 +53,27 @@ const events = (mainWindow, groupsWindow) => {
 
 	ipc.on('process-exam', function(event, file, config) {
 		if (file) {
-			const examReader = new ReadExam(file)
-			examReader.loadQuestions()
-			const exam = new Exam(examReader.questions, config)
-			saveFile(exam.getExam()).then(filename => {
-				if (filename !== false) {
-					event.sender.send('exam-processed', filename)
-				}
-			})
+			try {
+				const examReader = new ReadExam(file)
+				examReader.loadQuestions()
+				const exam = new Exam(examReader.questions, config)
+
+				saveFile(exam.getExam()).then(filename => {
+					if (filename !== false) {
+						event.sender.send('exam-processed', filename)
+					}
+				})
+			} catch (error) {
+				dialog.showErrorBox(
+					'Error ',
+					'The file you uploaded is not properly formatted.'
+				)
+			}
 		}
 	})
 
-	ipc.on('download-template', event => {
-		const examTemplate = new ExamTemplate()
+	ipc.on('download-template', (event, config) => {
+		const examTemplate = new ExamTemplate(config)
 		const txt = examTemplate.getTemplate()
 		saveFile(txt).then(filename => {
 			if (filename !== false) {

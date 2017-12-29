@@ -12,8 +12,11 @@ class Exam {
 		this.codeFirstPage = ''
 		this.versionStart = ''
 		this.versionEnd = ''
+		this.answerKey = ''
 		this.questionTex = ''
 		this.examTex = ''
+		this.arrAllQuestions = []
+		this.alphabet = 'abcdefjhijklmnpoqrstuvwxyz'
 		this.init()
 	}
 	init() {
@@ -41,16 +44,38 @@ class Exam {
 		this.questionTex = loadFileSync(
 			path.join(__dirname, '/../templates/partials/question.tex')
 		)
+		this.answerKey = loadFileSync(
+			path.join(__dirname, '/../templates/partials/answer-key.tex')
+		)
 	}
 	getQuestionString(shouldShuffle = false) {
-		const questions = shouldShuffle
-			? shuffle(this.questions).options
-			: this.questions
+		let questions = this.questions
+		if (shouldShuffle) {
+			let totalSoFar = 0
+			let shuffledQs = []
+			for (let group of this.config.varGroups) {
+				let temp = questions.slice(totalSoFar, totalSoFar + group)
+				totalSoFar += group
+				shuffledQs = shuffledQs.concat(shuffle(temp).options)
+			}
+			questions = shuffledQs
+		}
+
 		let questionsString = ''
 		let index = 1
+		let tempArr = []
 		for (let q of questions) {
 			let oString = ''
-			let options = shouldShuffle ? shuffle(q.options).options : q.options
+			let shuffled, options, correct
+			if (shouldShuffle) {
+				shuffled = shuffle(q.options)
+				options = shuffled.options
+				correct = shuffled.correctAnswer
+			} else {
+				options = q.options
+				correct = q.correctAnswer
+			}
+			tempArr.push({ body: q.body, options, correctAnswer: correct })
 			for (let o of options) {
 				oString += `
 					${settings.gvarBEGINOPTION}
@@ -69,6 +94,7 @@ class Exam {
 				.replace('VAR_QUESTION_OPTIONS', oString)
 				.replace('VAR_QUESTION_SEPARATOR', separator)
 		}
+		this.arrAllQuestions.push(tempArr)
 		return questionsString
 	}
 	getVersion(name) {
@@ -102,8 +128,35 @@ class Exam {
 			.replace(/VAR_NUM_OF_QUESTIONS/g, this.config.varNumOfQuestions)
 			.replace(/VAR_NUM_ANSWERS/g, this.config.varNumAnswers)
 			.replace(/VAR_TIME_ALLOWED/g, this.config.varTimeAllowed)
-			.replace(/VAR_NUM_OF_PAGES/g, parseInt(this.config.varNumOfQuestions) / 2)
+			.replace(
+				/VAR_NUM_OF_PAGES/g,
+				Math.ceil(parseInt(this.config.varNumOfQuestions) / 2)
+			)
 			.replace(/VAR_VERSION_NAME/g, name)
+	}
+	getAnswerKey() {
+		let str = '\\begin{tabular}{'
+		const numOfCodes = this.arrAllQuestions.length
+		for (let i = 0; i < numOfCodes + 1; i++) {
+			str += '|c|'
+		}
+		str += '}\n \\hline \n Q & MM  '
+		for (let i = 0; i < numOfCodes - 1; i++) {
+			str += `& V${i + 1}`
+		}
+		str += '\\\\ \n \\hline \\hline \n'
+		for (let i = 0; i < this.config.varNumOfQuestions; i++) {
+			str += `${i + 1} `
+			for (let code = 0; code < numOfCodes; code++) {
+				str += `& ${this.alphabet.charAt(
+					this.arrAllQuestions[code][i].correctAnswer
+				)}`
+			}
+
+			str += '\\\\ \\hline \n'
+		}
+		str += '\\end{tabular}'
+		return str
 	}
 	getExam() {
 		let examVar = ''
@@ -113,6 +166,9 @@ class Exam {
 		for (let i = 1; i <= this.config.varNumOfVersions; i++) {
 			examVar += this.getVersion(`CODE 000${i}`) + '\n'
 		}
+		examVar += this.setVariables(
+			this.answerKey.replace(/GVAR_ANSWER_KEY/, this.getAnswerKey())
+		)
 		examString = examString.replace('VAR_EXAM', examVar)
 		this.examString = examString
 		return this.examString

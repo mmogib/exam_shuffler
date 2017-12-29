@@ -17,6 +17,7 @@ const settings = {
 	gvarBEGINOPTION: '\\be',
 	gvarENDOPTION: '\\ee',
 	gvarOddQuestionDel: '\\v2\n',
-	gvarEvenQuestionDel: '\\newpage\n'
+	gvarEvenQuestionDel: '\\newpage\n',
+	gvarAnswerKey: '%%ANSWER_KEYS%%'
 }
 module.exports = settings
