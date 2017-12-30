@@ -1,12 +1,14 @@
 const { ipcRenderer } = require('electron')
-const { saveJson, saveJasonLocally, loadConfigs } = require('../helpers')
+const { saveJasonLocally, loadConfigs } = require('../helpers')
 
 const groupField = (group, index) => {
 	return `
 		<div class="twelve columns">
 			<label for="group_${index}">Group ${index + 1}</label>
 			<input class="group" type="text" value="${group}" >
-			 <a href="#" class="button  button-red u-pull-right" id="deletegroup_${index}">&times;</a>
+			 <a href="#" >
+			 <i id="deletegroup_${index}" class="fa fa-close icon"></i>
+			 </a>
 		</div>
 	`
 }
@@ -45,9 +47,9 @@ function saveWindow() {
 	if (difference > 0) {
 		groups[groups.length - 1] += difference
 	}
-	varNumGroups = groups.length
-	configs.varNumGroups = groups.length
-	configs.varGroups = groups
+	varNumGroups = groups.length === 0 ? 1 : groups.length
+	configs.varNumGroups = varNumGroups
+	configs.varGroups = varNumGroups === 1 ? [varNumQuestions] : groups
 	saveJasonLocally(configs)
 	//ipcRenderer.send('save-configs', configs)
 	ipcRenderer.send('update-groups')

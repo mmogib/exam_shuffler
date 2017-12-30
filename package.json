@@ -11,7 +11,8 @@
 			"electron-packager . exam-shuffler --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=KFUPM --version-string.FileDescription=KFUPM --version-string.ProductName=\"Exam Shuffling App\"",
 		"package-linux":
 			"electron-packager . exam-shuffler --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/512x512.png --prune=true --out=release-builds",
-		"create-installer-win": "node installers/windows/createinstaller.js"
+		"create-installer-win": "node installers/windows/createinstaller.js",
+		"install-win": "npm run package-win && npm run create-installer-win"
 	},
 	"repository": "https://github.com/mmogib/exam_shuffler",
 	"keywords": ["Electron", "exam", "shuffle", "KFUPM", "Math"],

@@ -41,7 +41,7 @@ const events = (mainWindow, groupsWindow) => {
 			mainWindow,
 			{
 				properties: ['openFile'],
-				filters: [{ name: 'LaTex Files', extensions: ['tex'] }]
+				filters: [{ name: 'Upload your exam', extensions: ['tex'] }]
 			},
 			function(files) {
 				if (files) {
@@ -54,15 +54,32 @@ const events = (mainWindow, groupsWindow) => {
 	ipc.on('process-exam', function(event, file, config) {
 		if (file) {
 			try {
-				const examReader = new ReadExam(file)
+				const examReader = new ReadExam(file, config.varNumAnswers)
 				examReader.loadQuestions()
-				const exam = new Exam(examReader.questions, config)
+				const questions = examReader.questions
+				if (examReader.hasError) {
+					dialog.showMessageBox(mainWindow, {
+						type: 'error',
+						title: 'Error',
+						message: examReader.error.join(', ')
+					})
+				} else if (parseInt(config.varNumOfQuestions) !== questions.length) {
+					dialog.showMessageBox(mainWindow, {
+						type: 'error',
+						title: 'Error',
+						message: `Your uploaded file should contain ${
+							config.varNumOfQuestions
+						} questions, but it contains ${questions.length} instead.`
+					})
+				} else {
+					const exam = new Exam(questions, config)
 
-				saveFile(exam.getExam()).then(filename => {
-					if (filename !== false) {
-						event.sender.send('exam-processed', filename)
-					}
-				})
+					saveFile(exam.getExam()).then(filename => {
+						if (filename !== false) {
+							event.sender.send('exam-processed', filename)
+						}
+					})
+				}
 			} catch (error) {
 				dialog.showErrorBox(
 					'Error ',

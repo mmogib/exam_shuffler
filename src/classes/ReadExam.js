@@ -2,10 +2,13 @@ const { loadFileSync } = require('../helpers')
 const settings = require('../configs/settings')
 
 class ReadExam {
-	constructor(file) {
+	constructor(file, noOfOptions) {
 		this.file = file
 		this.settings = settings
+		this.noOfOptions = parseInt(noOfOptions)
 		this.questions = []
+		this.hasError = false
+		this.error = []
 	}
 	loadQuestions() {
 		const data = loadFileSync(this.file)
@@ -42,6 +45,12 @@ class ReadExam {
 							.trim()
 					)
 			})
+			if (qOptionsArrayString.length !== this.noOfOptions) {
+				this.hasError = true
+				this.error.push(
+					`Options of question ${q + 1} are not ${this.noOfOptions}, please check.`
+				)
+			}
 			this.questions.push({
 				body: qBody,
 				options: qOptionsArrayString,

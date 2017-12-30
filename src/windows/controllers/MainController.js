@@ -21,6 +21,59 @@ module.exports = class MainController {
 	loadConfig() {
 		this.myconfig = loadConfigs()
 	}
+	validateField(key) {
+		let valid = true,
+			errorStr = ''
+		switch (key) {
+			case 'varTerm': {
+				if (!/^(\d){3}$/.test(this.myconfig[key])) {
+					errorStr = 'must be three digit integer'
+					valid = false
+				}
+				break
+			}
+			case 'varCourseCode':
+			case 'varExamTitle':
+			case 'varDate':
+			case 'varTimeAllowed': {
+				if (!/\w+/.test(this.myconfig[key])) {
+					errorStr = 'cannot be empty'
+					valid = false
+				}
+				break
+			}
+			case 'varNumOfQuestions':
+			case 'varNumOfVersions':
+			case 'varNumAnswers': {
+				if (!/\w+/.test(this.myconfig[key]) || parseInt(this.myconfig[key]) <= 0) {
+					errorStr = 'must be a number'
+					valid = false
+				}
+				break
+			}
+		}
+		return { isValid: valid, errorStr }
+	}
+	validate() {
+		let valid = true
+
+		const configs = Object.keys(this.myconfig)
+		configs.forEach(key => {
+			if (key !== 'varNumGroups' && key !== 'varGroups') {
+				let temp = document.getElementById(key + '_error')
+				temp.innerHTML = ''
+				temp.style.display = 'none'
+				let validate = this.validateField(key)
+				if (!validate.isValid) {
+					valid = false
+					temp.innerHTML = validate.errorStr
+					temp.style.display = 'block'
+				}
+			}
+		})
+
+		return valid
+	}
 	setConfigs() {
 		this.loadConfig()
 		this.varTerm.value = this.myconfig.varTerm
@@ -60,7 +113,14 @@ module.exports = class MainController {
 		downLoadBtn.addEventListener(
 			'click',
 			() => {
-				ipcRenderer.send('download-template', _this.myconfig)
+				if (_this.save()) {
+					ipcRenderer.send('download-template', _this.myconfig)
+				} else {
+					ipcRenderer.send(
+						'open-error-dialog',
+						'Please make sure that you fill the form correctly'
+					)
+				}
 			},
 			_this
 		)
@@ -94,31 +154,40 @@ module.exports = class MainController {
 
 		saveExamBtn.addEventListener(
 			'click',
-			function() {
-				let totalQ = _this.myconfig.varGroups.reduce((total, value) => {
-					console.log(value)
-					return total + value
-				}, 0)
-				const diff = _this.myconfig.varNumOfQuestions - totalQ
-				console.log(totalQ, _this.myconfig.varNumOfQuestions)
-				if (diff !== 0) {
-					_this.varGroups = [_this.myconfig.varNumOfQuestions]
-					_this.varNumGroups.innerHTML = 1
-					_this.myconfig.varGroups = [_this.myconfig.varNumOfQuestions]
-					_this.myconfig.varNumGroups = 1
-					_this.displayGroups()
+			() => {
+				if (_this.save()) {
+					let box = document.getElementById('success-save')
+					box.innerHTML = ''
+					let div = document.createElement('div')
+					div.innerHTML = `Saved Successfully
+					<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+					`
+					box.appendChild(div)
+					box.classList.remove('hide')
+					div.classList.add('alert-success')
+
+					setTimeout(function() {
+						box.classList.add('hide')
+						box.innerHTML = ''
+					}, 3000)
 				}
-				saveJasonLocally(_this.myconfig)
 			},
 			_this
 		)
 		downloadExamBtn.addEventListener(
 			'click',
 			() => {
-				if (!_this.examPath) {
-					ipcRenderer.send('open-error-dialog', 'Please first upload your file')
+				if (_this.save()) {
+					if (!_this.examPath) {
+						ipcRenderer.send('open-error-dialog', 'Please first upload your file')
+					} else {
+						ipcRenderer.send('process-exam', _this.examPath, _this.myconfig) // eslint-disable-line
+					}
 				} else {
-					ipcRenderer.send('process-exam', _this.examPath, _this.myconfig) // eslint-disable-line
+					ipcRenderer.send(
+						'open-error-dialog',
+						'Please make sure that you fill the form correctly'
+					)
 				}
 			},
 			_this
@@ -138,8 +207,25 @@ module.exports = class MainController {
 			this.myconfig = temp3
 		})
 	}
+	save() {
+		let totalQ = this.myconfig.varGroups.reduce((total, value) => {
+			return total + value
+		}, 0)
+		const diff = this.myconfig.varNumOfQuestions - totalQ
+		if (diff !== 0) {
+			this.varGroups = [this.myconfig.varNumOfQuestions]
+			this.varNumGroups.innerHTML = 1
+			this.myconfig.varGroups = [this.myconfig.varNumOfQuestions]
+			this.myconfig.varNumGroups = 1
+			this.displayGroups()
+		}
+		if (this.validate()) {
+			saveJasonLocally(this.myconfig)
+			return true
+		}
+		return false
+	}
 	setPath(path) {
-		console.log(path)
 		this.examPath = path
 	}
 	openGroupsWindow() {

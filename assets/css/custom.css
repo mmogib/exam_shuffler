@@ -19,3 +19,65 @@ body {
 	color: darkmagenta;
 	margin-bottom: 0;
 }
+
+.icon-add {
+	color: forestgreen;
+	font-size: 20px;
+}
+.icon-add:hover {
+	cursor: pointer;
+}
+
+.input-error {
+	color: red;
+	display: none;
+	margin: 0px;
+	padding: 0px;
+	margin-top: -10px;
+}
+
+.alert-success {
+	margin: 20px;
+	padding: 5px;
+	background-color: rgb(5, 134, 5);
+	color: white;
+	font-size: 16px;
+	border: 0px;
+	opacity: 1;
+	display: block;
+	border-radius: 15px;
+	animation: fade 2s;
+}
+.hide {
+	opacity: 0;
+	display: none;
+}
+
+.icon {
+	color: red;
+	font-size: 28px;
+}
+
+.closebtn {
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.closebtn:hover {
+	color: black;
+}
+
+@keyframes fade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}

@@ -38,7 +38,7 @@ module.exports = {
 	},
 	createWindow(
 		file,
-		width = 1100,
+		width = 900,
 		height = 1000,
 		frame = true,
 		modal = false,
@@ -69,8 +69,12 @@ module.exports = {
 		return window
 	},
 	loadConfigs() {
+		if (localStorage.length === 0) {
+			return require(__dirname + '/../configs/configs')
+		}
 		const configs = Object.keys(localStorage)
 		let tempObj = {}
+
 		configs.forEach(key => {
 			if (key === 'varGroups') {
 				let groups = localStorage.getItem(key).split(',')
