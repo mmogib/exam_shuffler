@@ -47,7 +47,9 @@ class ExamTemplate {
 			settings.gvarEndQuestionTag
 		let data = loadFileSync(this.examTemplate)
 		//data = data.replace(/VAR_COURSE_CODE/, this.config.varCourseCode)
-		this.template = data.replace(settings.gvarQUESTIONSPLACEHOLDER, str)
+		this.template = data
+			.replace(settings.gvarQUESTIONSPLACEHOLDER, str)
+			.replace(/VAR_COURSE_CODE/, this.config.varCourseCode)
 	}
 }
 

@@ -89,6 +89,26 @@ module.exports = {
 		})
 		return tempObj
 	},
+	loadSetting() {
+		if (!localStorage.gvarUniversity || !localStorage.gvarDepartment) {
+			const temp = require(__dirname + '/../configs/settings')
+			return {
+				gvarUniversity: temp.gvarUniversity,
+				gvarDepartment: temp.gvarDepartment
+			}
+		}
+
+		return {
+			gvarUniversity: localStorage.getItem('gvarUniversity'),
+			gvarDepartment: localStorage.getItem('gvarDepartment')
+		}
+	},
+	saveSettingLocally(obj) {
+		const keys = Object.keys(obj)
+		keys.forEach(key => {
+			localStorage.setItem(key, obj[key])
+		})
+	},
 	saveJasonLocally(obj) {
 		const keys = Object.keys(obj)
 		keys.forEach(key => {

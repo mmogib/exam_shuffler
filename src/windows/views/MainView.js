@@ -3,10 +3,21 @@ module.exports = class MainView {
 		return `
             <h2>Exam Shuffler</h2>
         <hr/>
+        <div class="row">
+            <div class="two columns" ><strong>University:</strong></div>
+            <div class="ten columns" id="gvarUniversity" contenteditable></div>
+        </div>
+        
+        <div class="row">
+            <div class="two columns" ><strong>Department:</strong></div>
+            <div class="ten columns" id="gvarDepartment" contenteditable></div>
+        </div>
+        <hr/>
         <ol>
         <div class="row">
             <li>First fill in the following form and click save to start preparing your exam.</li>
         </div>
+        
         <div class="row">
 
             <div class="four columns">

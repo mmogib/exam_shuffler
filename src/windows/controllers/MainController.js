@@ -1,5 +1,10 @@
 const { ipcRenderer } = require('electron')
-const { saveJasonLocally, loadConfigs } = require('../../helpers')
+const {
+	saveJasonLocally,
+	loadConfigs,
+	loadSetting,
+	saveSettingLocally
+} = require('../../helpers')
 const MainView = require('../views/MainView')
 module.exports = class MainController {
 	constructor() {
@@ -12,11 +17,14 @@ module.exports = class MainController {
 		this.varNumAnswers = ''
 		this.varTimeAllowed = ''
 		this.varNumGroups = ''
+		this.gvarUniversity = ''
+		this.gvarDepartment = ''
 		this.varGroups = []
+		this.changeGroupgs = ''
 		this.examPath = ''
 		this.myconfig = ''
+		this.setting = loadSetting()
 		this.init()
-		this.setUpListeners()
 	}
 	loadConfig() {
 		this.myconfig = loadConfigs()
@@ -59,7 +67,12 @@ module.exports = class MainController {
 
 		const configs = Object.keys(this.myconfig)
 		configs.forEach(key => {
-			if (key !== 'varNumGroups' && key !== 'varGroups') {
+			if (
+				key !== 'varNumGroups' &&
+				key !== 'varGroups' &&
+				key !== 'gvarUniversity' &&
+				key !== 'gvarDepartment'
+			) {
 				let temp = document.getElementById(key + '_error')
 				temp.innerHTML = ''
 				temp.style.display = 'none'
@@ -75,7 +88,6 @@ module.exports = class MainController {
 		return valid
 	}
 	setConfigs() {
-		this.loadConfig()
 		this.varTerm.value = this.myconfig.varTerm
 		this.varCourseCode.value = this.myconfig.varCourseCode
 		this.varExamTitle.value = this.myconfig.varExamTitle
@@ -85,10 +97,13 @@ module.exports = class MainController {
 		this.varNumAnswers.value = this.myconfig.varNumAnswers
 		this.varTimeAllowed.value = this.myconfig.varTimeAllowed
 		this.varNumGroups.innerHTML = this.myconfig.varNumGroups
+		this.gvarUniversity.innerHTML = this.setting.gvarUniversity
+		this.gvarDepartment.innerHTML = this.setting.gvarDepartment
 		this.varGroups = this.myconfig.varGroups
-		this.displayGroups()
 	}
 	init() {
+		const mainV = new MainView()
+		document.querySelector('.container').innerHTML = mainV.html()
 		this.varTerm = document.getElementById('varTerm')
 		this.varCourseCode = document.getElementById('varCourseCode')
 		this.varExamTitle = document.getElementById('varExamTitle')
@@ -98,16 +113,36 @@ module.exports = class MainController {
 		this.varNumAnswers = document.getElementById('varNumAnswers')
 		this.varTimeAllowed = document.getElementById('varTimeAllowed')
 		this.varNumGroups = document.getElementById('varNumGroups')
+		this.changeGroupgs = document.getElementById('changeGroupgs')
+		this.gvarUniversity = document.getElementById('gvarUniversity')
+		this.gvarDepartment = document.getElementById('gvarDepartment')
+		this.setUpListeners()
+		this.loadConfig()
 		this.setConfigs()
+		this.displayGroups()
 	}
 	displayGroups() {
 		const mainV = new MainView()
 		document.getElementById('groups').innerHTML = mainV.groupHtml(this.varGroups)
 	}
+	saveSetting() {
+		this.setting.gvarUniversity = this.gvarUniversity.innerHTML
+		this.setting.gvarDepartment = this.gvarDepartment.innerHTML
+		this.myconfig.gvarUniversity = this.setting.gvarUniversity
+		this.myconfig.gvarDepartment = this.setting.gvarDepartment
+		saveSettingLocally(this.setting)
+	}
 
 	setUpListeners() {
 		let _this = this
 
+		this.changeGroupgs.addEventListener(
+			'click',
+			() => _this.openGroupsWindow(),
+			_this
+		)
+		this.gvarUniversity.addEventListener('blur', () => this.saveSetting())
+		this.gvarDepartment.addEventListener('blur', () => this.saveSetting())
 		/// download template
 		const downLoadBtn = document.getElementById('download-template')
 		downLoadBtn.addEventListener(
@@ -125,7 +160,9 @@ module.exports = class MainController {
 			_this
 		)
 		ipcRenderer.on('update-groups', () => {
+			this.loadConfig()
 			this.setConfigs()
+			this.displayGroups()
 			this.varGroups = this.myconfig.varGroups
 			this.varNumGroups.innerHTML = this.myconfig.varNumGroups
 		})
@@ -207,6 +244,7 @@ module.exports = class MainController {
 			this.myconfig = temp3
 		})
 	}
+
 	save() {
 		let totalQ = this.myconfig.varGroups.reduce((total, value) => {
 			return total + value

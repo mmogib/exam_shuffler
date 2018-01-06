@@ -118,8 +118,8 @@ class Exam {
 	}
 	setVariables(vesrion, name = 'MASTER') {
 		return vesrion
-			.replace(/GVAR_UNIVERSITY/g, settings.gvarUniversity)
-			.replace(/GVAR_DEPARTMENT/g, settings.gvarDepartment)
+			.replace(/GVAR_UNIVERSITY/g, this.config.gvarUniversity)
+			.replace(/GVAR_DEPARTMENT/g, this.config.gvarDepartment)
 			.replace(/VAR_COURSE_CODE/g, this.config.varCourseCode)
 			.replace(/VAR_EXAM_TITLE/g, this.config.varExamTitle)
 			.replace(/VAR_TERM/g, this.config.varTerm)

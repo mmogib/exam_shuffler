@@ -4,6 +4,7 @@
 	"description": "A Simple App to Shuffle Exams",
 	"main": "main.js",
 	"scripts": {
+		"pack": "webpack -w",
 		"start": "electron .",
 		"package-mac":
 			"electron-packager . exam-shuffler --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
@@ -19,10 +20,17 @@
 	"author": "GitHub",
 	"license": "CC0-1.0",
 	"devDependencies": {
+		"babel-core": "^6.26.0",
+		"babel-loader": "^7.1.2",
+		"babel-preset-env": "^1.6.1",
+		"css-loader": "^0.28.7",
 		"electron": "^1.7.10",
 		"electron-packager": "^10.1.0",
 		"electron-winstaller": "^2.6.3",
-		"eslint": "^4.13.1"
+		"eslint": "^4.13.1",
+		"file-loader": "^1.1.6",
+		"style-loader": "^0.19.1",
+		"webpack": "^3.10.0"
 	},
 	"dependencies": {}
 }
