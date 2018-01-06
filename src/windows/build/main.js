@@ -60,11 +60,17 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+module.exports = require("electron");
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74,162 +80,12 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 // eslint-disable-next-line no-use-before-define
-var MainController = __webpack_require__(3);
+var MainController = __webpack_require__(2);
 /// MAIN INDEX
 new MainController().init();
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = require("electron");
-
-/***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var electron = __webpack_require__(1);
-// Module to control application life.
-var BrowserWindow = electron.BrowserWindow;
-var dialog = electron.dialog;
-
-var url = __webpack_require__(4);
-var fs = __webpack_require__(5);
-module.exports = {
-	loadFile: function loadFile(file) {
-		return new Promise(function (resolve, reject) {
-			fs.readFile(file, 'utf8', function (error, data) {
-				if (error) {
-					reject(error);
-				} else {
-					resolve(data);
-				}
-			});
-		});
-	},
-	loadFileSync: function loadFileSync(file) {
-		return fs.readFileSync(file, 'utf8');
-	},
-	shuffle: function shuffle(array) {
-		var temp = [];
-		var i = array.length,
-		    j = void 0,
-		    swap = void 0,
-		    correctIndex = 0;
-		array.forEach(function (value) {
-			return temp.push(value);
-		});
-		while (--i) {
-			j = Math.random() * (i + 1) | 0;
-			correctIndex = j === correctIndex ? i : correctIndex;
-			swap = temp[i];
-			temp[i] = temp[j];
-			temp[j] = swap;
-		}
-		return { options: temp, correctAnswer: correctIndex };
-	},
-	createWindow: function createWindow(file) {
-		var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 900;
-		var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1000;
-		var frame = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-		var modal = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-		var parent = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
-		var show = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : true;
-
-		// Create the browser window.
-		var window = new BrowserWindow({ width: width, height: height, frame: frame, modal: modal, parent: parent, show: show });
-		// and load the index.html of the app.
-		window.loadURL(url.format({
-			pathname: file,
-			protocol: 'file:',
-			slashes: true
-		}));
-
-		// Open the DevTools.
-		// mainWindow.webContents.openDevTools()
-
-		// Emitted when the window is closed.
-		window.on('closed', function () {
-			// Dereference the window object, usually you would store windows
-			// in an array if your app supports multi windows, this is the time
-			// when you should delete the corresponding element.
-			window = null;
-		});
-		return window;
-	},
-	loadConfigs: function loadConfigs() {
-		if (localStorage.length === 0) {
-			return __webpack_require__(6);
-		}
-		var configs = Object.keys(localStorage);
-		var tempObj = {};
-
-		configs.forEach(function (key) {
-			if (key === 'varGroups') {
-				var groups = localStorage.getItem(key).split(',');
-				var tempGrps = [];
-				groups.forEach(function (group) {
-					tempGrps.push(parseInt(group));
-				});
-				tempObj[key] = tempGrps;
-			} else {
-				tempObj[key] = localStorage.getItem(key);
-			}
-		});
-		return tempObj;
-	},
-	loadSetting: function loadSetting() {
-		if (!localStorage.gvarUniversity || !localStorage.gvarDepartment) {
-			var temp = __webpack_require__(8);
-			return {
-				gvarUniversity: temp.gvarUniversity,
-				gvarDepartment: temp.gvarDepartment
-			};
-		}
-
-		return {
-			gvarUniversity: localStorage.getItem('gvarUniversity'),
-			gvarDepartment: localStorage.getItem('gvarDepartment')
-		};
-	},
-	saveSettingLocally: function saveSettingLocally(obj) {
-		var keys = Object.keys(obj);
-		keys.forEach(function (key) {
-			localStorage.setItem(key, obj[key]);
-		});
-	},
-	saveJasonLocally: function saveJasonLocally(obj) {
-		var keys = Object.keys(obj);
-		keys.forEach(function (key) {
-			localStorage.setItem(key, obj[key]);
-		});
-	},
-	saveJson: function saveJson(filename, json) {
-		fs.writeFileSync(filename, JSON.stringify(json));
-	},
-	saveFile: function saveFile(text) {
-		var options = {
-			title: 'Save LaTeX File',
-			filters: [{ name: 'LaTeX', extensions: ['tex'] }]
-		};
-		return new Promise(function (resolve) {
-			dialog.showSaveDialog(options, function (filename) {
-				if (filename) {
-					fs.writeFileSync(filename, text);
-					resolve(filename);
-				} else {
-					resolve(false);
-				}
-			});
-		});
-	}
-};
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -239,16 +95,16 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _require = __webpack_require__(1),
+var _require = __webpack_require__(0),
     ipcRenderer = _require.ipcRenderer;
 
-var _require2 = __webpack_require__(2),
+var _require2 = __webpack_require__(3),
     saveJasonLocally = _require2.saveJasonLocally,
     loadConfigs = _require2.loadConfigs,
     loadSetting = _require2.loadSetting,
     saveSettingLocally = _require2.saveSettingLocally;
 
-var MainView = __webpack_require__(7);
+var MainView = __webpack_require__(8);
 module.exports = function () {
 	function MainController() {
 		_classCallCheck(this, MainController);
@@ -499,6 +355,7 @@ module.exports = function () {
 			}
 			if (this.validate()) {
 				saveJasonLocally(this.myconfig);
+				saveSettingLocally(this.setting);
 				return true;
 			}
 			return false;
@@ -519,6 +376,150 @@ module.exports = function () {
 }();
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var electron = __webpack_require__(0);
+// Module to control application life.
+var BrowserWindow = electron.BrowserWindow;
+var dialog = electron.dialog;
+
+var url = __webpack_require__(4);
+var fs = __webpack_require__(5);
+module.exports = {
+	loadFile: function loadFile(file) {
+		return new Promise(function (resolve, reject) {
+			fs.readFile(file, 'utf8', function (error, data) {
+				if (error) {
+					reject(error);
+				} else {
+					resolve(data);
+				}
+			});
+		});
+	},
+	loadFileSync: function loadFileSync(file) {
+		return fs.readFileSync(file, 'utf8');
+	},
+	shuffle: function shuffle(array) {
+		var temp = [];
+		var i = array.length,
+		    j = void 0,
+		    swap = void 0,
+		    correctIndex = 0;
+		array.forEach(function (value) {
+			return temp.push(value);
+		});
+		while (--i) {
+			j = Math.random() * (i + 1) | 0;
+			correctIndex = j === correctIndex ? i : correctIndex;
+			swap = temp[i];
+			temp[i] = temp[j];
+			temp[j] = swap;
+		}
+		return { options: temp, correctAnswer: correctIndex };
+	},
+	createWindow: function createWindow(file) {
+		var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 900;
+		var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1000;
+		var frame = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+		var modal = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+		var parent = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
+		var show = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : true;
+
+		// Create the browser window.
+		var window = new BrowserWindow({ width: width, height: height, frame: frame, modal: modal, parent: parent, show: show });
+		// and load the index.html of the app.
+		window.loadURL(url.format({
+			pathname: file,
+			protocol: 'file:',
+			slashes: true
+		}));
+
+		// Open the DevTools.
+		// mainWindow.webContents.openDevTools()
+
+		// Emitted when the window is closed.
+		window.on('closed', function () {
+			// Dereference the window object, usually you would store windows
+			// in an array if your app supports multi windows, this is the time
+			// when you should delete the corresponding element.
+			window = null;
+		});
+		return window;
+	},
+	loadConfigs: function loadConfigs() {
+		if (localStorage.length === 0) {
+			return __webpack_require__(6);
+		}
+		var configs = Object.keys(localStorage);
+		var tempObj = {};
+
+		configs.forEach(function (key) {
+			if (key === 'varGroups') {
+				var groups = localStorage.getItem(key).split(',');
+				var tempGrps = [];
+				groups.forEach(function (group) {
+					tempGrps.push(parseInt(group));
+				});
+				tempObj[key] = tempGrps;
+			} else {
+				tempObj[key] = localStorage.getItem(key);
+			}
+		});
+		return tempObj;
+	},
+	loadSetting: function loadSetting() {
+		if (!localStorage.gvarUniversity || !localStorage.gvarDepartment) {
+			var temp = __webpack_require__(7);
+			return {
+				gvarUniversity: temp.gvarUniversity,
+				gvarDepartment: temp.gvarDepartment
+			};
+		}
+
+		return {
+			gvarUniversity: localStorage.getItem('gvarUniversity'),
+			gvarDepartment: localStorage.getItem('gvarDepartment')
+		};
+	},
+	saveSettingLocally: function saveSettingLocally(obj) {
+		var keys = Object.keys(obj);
+		keys.forEach(function (key) {
+			localStorage.setItem(key, obj[key]);
+		});
+	},
+	saveJasonLocally: function saveJasonLocally(obj) {
+		var keys = Object.keys(obj);
+		keys.forEach(function (key) {
+			localStorage.setItem(key, obj[key]);
+		});
+	},
+	saveJson: function saveJson(filename, json) {
+		fs.writeFileSync(filename, JSON.stringify(json));
+	},
+	saveFile: function saveFile(text) {
+		var options = {
+			title: 'Save LaTeX File',
+			filters: [{ name: 'LaTeX', extensions: ['tex'] }]
+		};
+		return new Promise(function (resolve) {
+			dialog.showSaveDialog(options, function (filename) {
+				if (filename) {
+					fs.writeFileSync(filename, text);
+					resolve(filename);
+				} else {
+					resolve(false);
+				}
+			});
+		});
+	}
+};
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
@@ -535,32 +536,54 @@ module.exports = require("fs");
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(__dirname) {
 
-var _require = __webpack_require__(2),
-    loadFileSync = _require.loadFileSync;
 
-var filename = __dirname + '/configs.json';
-
-var data = loadFileSync(filename);
-module.exports = JSON.parse(data);
-
-/*
-{
-	"varTerm": "152",
-	"varCourseCode": "MATH 101",
-	"varExamTitle": "EXAM I",
-	"varDate": "Monday 25/12/2017",
-	"varNumOfQuestions": 20,
-	"varNumOfVersions": 4,
-	"varNumAnswers": 5,
-	"varTimeAllowed": "120 minutes"
-}
-*/
-/* WEBPACK VAR INJECTION */}.call(exports, "/"))
+module.exports = {
+	varCourseCode: 'MATH 101',
+	varDate: 'Monday 25/12/2018',
+	varExamTitle: 'EXAM I',
+	varGroups: [5, 5, 5, 5],
+	varNumAnswers: 5,
+	varNumGroups: 4,
+	varNumOfQuestions: '20',
+	varNumOfVersions: '4',
+	varTerm: '171',
+	varTimeAllowed: '120 minutes'
+};
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var settings = {
+	gvarUniversity: 'King Fahd University of Petroleum and Minerals',
+	gvarDepartment: 'Department of Mathematics and Statistics',
+	gvarBeginQuestionTag: '%%BEGIN_QUESTIONS%%',
+	gvarEndQuestionTag: '%%END_QUESTIONS%%',
+	gvarQUESTIONSPLACEHOLDER: '%%QUESTIONS%%',
+	gvarBeginQuestionBodyTag: '%%BEGIN_QUESTION_BODY%%',
+	gvarEndQuestionBodyTag: '%%END_QUESTION_BODY%%',
+	gvarNextQuestion: '%%NEXT_QUESTION%%',
+	gvarAfterOddQuestion: '\\vspace{0.8in}\n',
+	gvarAfterEvenQuestion: '\\newpage\n',
+	gvarBeginOptions: '%%BEGIN_OPTIONS%%',
+	gvarEndOptions: '%%END_OPTIONS%%',
+	gvarOPTIONITEM: '\\item',
+	gvarQUESTIONITEM: '\\item\n',
+	gvarAFTERQUESTIONBODY: '\\sc\n',
+	gvarBEGINOPTION: '\\be',
+	gvarENDOPTION: '\\ee',
+	gvarOddQuestionDel: '\\v2\n',
+	gvarEvenQuestionDel: '\\newpage\n',
+	gvarAnswerKey: '%%ANSWER_KEYS%%'
+};
+module.exports = settings;
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -592,37 +615,6 @@ module.exports = function () {
 
     return MainView;
 }();
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var settings = {
-	gvarUniversity: 'King Fahd University of Petroleum and Minerals',
-	gvarDepartment: 'Department of Mathematics and Statistics',
-	gvarBeginQuestionTag: '%%BEGIN_QUESTIONS%%',
-	gvarEndQuestionTag: '%%END_QUESTIONS%%',
-	gvarQUESTIONSPLACEHOLDER: '%%QUESTIONS%%',
-	gvarBeginQuestionBodyTag: '%%BEGIN_QUESTION_BODY%%',
-	gvarEndQuestionBodyTag: '%%END_QUESTION_BODY%%',
-	gvarNextQuestion: '%%NEXT_QUESTION%%',
-	gvarAfterOddQuestion: '\\vspace{0.8in}\n',
-	gvarAfterEvenQuestion: '\\newpage\n',
-	gvarBeginOptions: '%%BEGIN_OPTIONS%%',
-	gvarEndOptions: '%%END_OPTIONS%%',
-	gvarOPTIONITEM: '\\item',
-	gvarQUESTIONITEM: '\\item\n',
-	gvarAFTERQUESTIONBODY: '\\sc\n',
-	gvarBEGINOPTION: '\\be',
-	gvarENDOPTION: '\\ee',
-	gvarOddQuestionDel: '\\v2\n',
-	gvarEvenQuestionDel: '\\newpage\n',
-	gvarAnswerKey: '%%ANSWER_KEYS%%'
-};
-module.exports = settings;
 
 /***/ })
 /******/ ]);

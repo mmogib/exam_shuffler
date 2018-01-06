@@ -1,5 +1,5 @@
 {
-	"name": "exam-shufller",
+	"name": "exam-shuffler",
 	"version": "1.0.0",
 	"description": "A Simple App to Shuffle Exams",
 	"main": "main.js",
@@ -13,7 +13,8 @@
 		"package-linux":
 			"electron-packager . exam-shuffler --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/512x512.png --prune=true --out=release-builds",
 		"create-installer-win": "node installers/windows/createinstaller.js",
-		"install-win": "npm run package-win && npm run create-installer-win"
+		"install-win":
+			"webpack && npm run package-win && npm run create-installer-win"
 	},
 	"repository": "https://github.com/mmogib/exam_shuffler",
 	"keywords": ["Electron", "exam", "shuffle", "KFUPM", "Math"],

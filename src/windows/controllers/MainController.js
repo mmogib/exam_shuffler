@@ -259,6 +259,7 @@ module.exports = class MainController {
 		}
 		if (this.validate()) {
 			saveJasonLocally(this.myconfig)
+			saveSettingLocally(this.setting)
 			return true
 		}
 		return false
