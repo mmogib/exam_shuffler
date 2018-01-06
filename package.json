@@ -4,7 +4,7 @@
 	"description": "A Simple App to Shuffle Exams",
 	"main": "main.js",
 	"scripts": {
-		"pack": "webpack -w",
+		"pack": "webpack",
 		"start": "electron .",
 		"package-mac":
 			"electron-packager . exam-shuffler --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
