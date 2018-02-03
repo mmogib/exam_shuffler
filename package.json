@@ -6,18 +6,20 @@
 	"scripts": {
 		"pack": "webpack -w",
 		"start": "electron .",
-		"package-mac":
-			"electron-packager . exam-shuffler --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
-		"package-win":
-			"electron-packager . exam-shuffler --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=KFUPM --version-string.FileDescription=KFUPM --version-string.ProductName=\"Exam Shuffling App\"",
-		"package-linux":
-			"electron-packager . exam-shuffler --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/512x512.png --prune=true --out=release-builds",
+		"package-mac": "electron-packager . exam-shuffler --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+		"package-win": "electron-packager . exam-shuffler --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=KFUPM --version-string.FileDescription=KFUPM --version-string.ProductName=\"Exam Shuffling App\"",
+		"package-linux": "electron-packager . exam-shuffler --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/512x512.png --prune=true --out=release-builds",
 		"create-installer-win": "node installers/windows/createinstaller.js",
-		"install-win":
-			"webpack && npm run package-win && npm run create-installer-win"
+		"install-win": "webpack && npm run package-win && npm run create-installer-win"
 	},
 	"repository": "https://github.com/mmogib/exam_shuffler",
-	"keywords": ["Electron", "exam", "shuffle", "KFUPM", "Math"],
+	"keywords": [
+		"Electron",
+		"exam",
+		"shuffle",
+		"KFUPM",
+		"Math"
+	],
 	"author": "GitHub",
 	"license": "CC0-1.0",
 	"devDependencies": {
@@ -25,7 +27,7 @@
 		"babel-loader": "^7.1.2",
 		"babel-preset-env": "^1.6.1",
 		"css-loader": "^0.28.7",
-		"electron": "^1.7.10",
+		"electron": "^1.7.12",
 		"electron-packager": "^10.1.0",
 		"electron-winstaller": "^2.6.3",
 		"eslint": "^4.13.1",
