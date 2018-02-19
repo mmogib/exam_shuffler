@@ -164,7 +164,7 @@ class Exam {
 		const masterVersion = this.getMasterVersion()
 		examVar = masterVersion + '\n'
 		for (let i = 1; i <= this.config.varNumOfVersions; i++) {
-			examVar += this.getVersion(`CODE 000${i}`) + '\n'
+			examVar += this.getVersion(`CODE 00${i}`) + '\n'
 		}
 		examVar += this.setVariables(
 			this.answerKey.replace(/GVAR_ANSWER_KEY/, this.getAnswerKey())

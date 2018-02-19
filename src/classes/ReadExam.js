@@ -42,6 +42,7 @@ class ReadExam {
 						value
 							.replace(/\n/g, '')
 							.replace(/\r/g, '')
+							.replace(/\$/g, '')
 							.trim()
 					)
 			})
